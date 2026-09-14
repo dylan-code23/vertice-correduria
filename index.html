@@ -50,7 +50,7 @@
   }
 
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
+    :root {
       --paper: #0A1611;
       --surface: #0F1E17;
       --surface-2: #13251C;
@@ -71,28 +71,6 @@
       --err-bg: #2B1613;
       --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 20px 44px -24px rgb(0 0 0 / 0.6);
     }
-  }
-
-  :root[data-theme="dark"] {
-    --paper: #0A1611;
-    --surface: #0F1E17;
-    --surface-2: #13251C;
-    --ink: #E8F0EA;
-    --ink-soft: #C1D4C8;
-    --muted: #8DA697;
-    --line: #21322A;
-    --line-strong: #2E4438;
-    --brand: #5FB98A;
-    --brand-strong: #7FCBA1;
-    --brand-contrast: #07140E;
-    --accent: #D8B673;
-    --accent-soft: #C7A45E;
-    --focus: #5FB98A;
-    --ok: #5CC08C;
-    --ok-bg: #122A1C;
-    --err: #E98A82;
-    --err-bg: #2B1613;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 20px 44px -24px rgb(0 0 0 / 0.6);
   }
 
   * { box-sizing: border-box; }
@@ -196,19 +174,6 @@
 
   .header__actions { margin-inline-start: auto; display: flex; align-items: center; gap: 0.7rem; }
 
-  .theme-toggle {
-    display: grid; place-items: center;
-    width: 2.3rem; height: 2.3rem;
-    border: 1px solid var(--line-strong); background: transparent;
-    border-radius: 2px; color: var(--ink-soft); cursor: pointer;
-  }
-  .theme-toggle:hover { border-color: var(--accent); color: var(--ink); }
-  .theme-toggle:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-  .theme-toggle svg { width: 1.1rem; height: 1.1rem; }
-  .theme-toggle .icon-sun { display: none; }
-  .theme-toggle[data-mode="dark"] .icon-sun { display: block; }
-  .theme-toggle[data-mode="dark"] .icon-moon { display: none; }
-
   /* Mobile navigation --------------------------------------------------- */
   .nav-toggle {
     display: none; place-items: center;
@@ -236,7 +201,7 @@
     .nav { display: none; }
     .nav-toggle { display: grid; }
     .mobile-nav:not([hidden]) { display: block; }
-    .theme-toggle, .nav-toggle { width: 2.6rem; height: 2.6rem; }
+    .nav-toggle { width: 2.6rem; height: 2.6rem; }
     .header__actions .btn--sm { display: none; }
   }
 
@@ -322,15 +287,65 @@
     background: var(--paper); border: 1px solid var(--line);
     padding: 0.5rem 0.8rem; letter-spacing: 0.02em; text-align: center;
   }
-  .photo--band { aspect-ratio: 21 / 7; margin-top: clamp(2rem, 5vw, 3.5rem); }
   .nosotros__photo { aspect-ratio: 4 / 5; }
   @media (max-width: 860px) {
-    .photo--band { aspect-ratio: 16 / 9; }
     .nosotros__photo { aspect-ratio: 16 / 10; }
   }
   @media (min-width: 861px) {
     .nosotros__photo { aspect-ratio: auto; align-self: stretch; }
   }
+
+  /* Carousel (hero: oficina y equipo) --------------------------------- */
+  .carousel {
+    position: relative; border: 1px solid var(--line);
+    margin-top: clamp(2rem, 5vw, 3.5rem); overflow: hidden;
+  }
+  .carousel__track {
+    display: flex; list-style: none; margin: 0; padding: 0;
+    aspect-ratio: 21 / 7; overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth;
+  }
+  .carousel__track::-webkit-scrollbar { display: none; }
+  .carousel__slide { flex: 0 0 100%; scroll-snap-align: start; }
+  .carousel__slide img { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 860px) {
+    .carousel__track { aspect-ratio: 16 / 9; }
+  }
+
+  .carousel__badge {
+    position: absolute; top: 0.9rem; left: 0.9rem;
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.02em;
+    color: #fff; background: rgb(10 20 15 / 0.55); backdrop-filter: blur(4px);
+    padding: 0.4rem 0.7rem; border: 1px solid rgb(255 255 255 / 0.35);
+  }
+
+  .carousel__btn {
+    position: absolute; top: 50%; translate: 0 -50%;
+    width: 2.5rem; height: 2.5rem; display: grid; place-items: center;
+    border: 1px solid rgb(255 255 255 / 0.35); border-radius: 999px;
+    background: rgb(10 20 15 / 0.5); backdrop-filter: blur(4px);
+    color: #fff; cursor: pointer;
+  }
+  .carousel__btn svg { width: 1.2rem; height: 1.2rem; }
+  .carousel__btn:hover { background: rgb(10 20 15 / 0.75); }
+  .carousel__btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  .carousel__btn--prev { left: 0.9rem; }
+  .carousel__btn--next { right: 0.9rem; }
+  @media (max-width: 560px) {
+    .carousel__btn { width: 2.2rem; height: 2.2rem; }
+  }
+
+  .carousel__dots {
+    position: absolute; bottom: 0.9rem; left: 50%; translate: -50% 0;
+    display: flex; gap: 0.5rem;
+  }
+  .carousel__dot {
+    width: 0.55rem; height: 0.55rem; padding: 0; border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.7); background: rgb(255 255 255 / 0.35);
+    cursor: pointer;
+  }
+  .carousel__dot[aria-current="true"] { background: #fff; }
+  .carousel__dot:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
   /* Section head --------------------------------------------------------- */
   .section__head { max-width: 60ch; margin-bottom: clamp(2rem, 4vw, 3rem); }
@@ -574,15 +589,6 @@
       <a href="#contacto">Contacto</a>
     </nav>
     <div class="header__actions">
-      <button class="theme-toggle" type="button" id="themeToggle" aria-label="Cambiar tema">
-        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.11-1.36a5.4 5.4 0 0 1-7.53-7.53C12.92 3.04 12.46 3 12 3Z" fill="currentColor"/>
-        </svg>
-        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-          <circle cx="12" cy="12" r="4"/>
-          <path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/>
-        </svg>
-      </button>
       <a class="btn btn--primary btn--sm" href="#contacto">Cotizar</a>
       <button class="nav-toggle" type="button" id="navToggle" aria-expanded="false" aria-controls="mobileNav" aria-label="Abrir menú">
         <svg class="icon-burger" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
@@ -649,9 +655,39 @@
     </div>
 
     <div class="wrap">
-      <figure class="photo photo--band" data-reveal-self>
-        <span class="photo__label">Fotografía del equipo u oficina — reemplazar</span>
-      </figure>
+      <div class="carousel" data-carousel role="region" aria-roledescription="carrusel" aria-label="Fotos de la oficina y el equipo" data-reveal-self>
+        <ul class="carousel__track">
+          <li class="carousel__slide">
+            <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&amp;fit=crop&amp;w=1600&amp;q=68" alt="Equipo reunido alrededor de una mesa en una oficina luminosa" loading="eager">
+          </li>
+          <li class="carousel__slide">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&amp;fit=crop&amp;w=1600&amp;q=68" alt="Equipo en una sesión de trabajo frente a un pizarrón con notas" loading="lazy">
+          </li>
+          <li class="carousel__slide">
+            <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&amp;fit=crop&amp;w=1600&amp;q=68" alt="Colaboradores conversando en sus puestos de trabajo en una oficina moderna" loading="lazy">
+          </li>
+          <li class="carousel__slide">
+            <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&amp;fit=crop&amp;w=1600&amp;q=68" alt="Dos profesionales chocando las manos tras cerrar un acuerdo" loading="lazy">
+          </li>
+          <li class="carousel__slide">
+            <img src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&amp;fit=crop&amp;w=1600&amp;q=68" alt="Manos entrelazadas de un equipo en señal de compromiso" loading="lazy">
+          </li>
+        </ul>
+        <span class="carousel__badge">Fotos de stock — reemplazar por las de la empresa</span>
+        <button class="carousel__btn carousel__btn--prev" type="button" aria-label="Foto anterior">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <button class="carousel__btn carousel__btn--next" type="button" aria-label="Foto siguiente">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <div class="carousel__dots">
+          <button class="carousel__dot" type="button" aria-label="Ir a la foto 1" aria-current="true"></button>
+          <button class="carousel__dot" type="button" aria-label="Ir a la foto 2" aria-current="false"></button>
+          <button class="carousel__dot" type="button" aria-label="Ir a la foto 3" aria-current="false"></button>
+          <button class="carousel__dot" type="button" aria-label="Ir a la foto 4" aria-current="false"></button>
+          <button class="carousel__dot" type="button" aria-label="Ir a la foto 5" aria-current="false"></button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -893,31 +929,6 @@
     root.classList.add('js');
     root.lang = 'es';
 
-    /* Theme toggle ------------------------------------------------------- */
-    var toggle = document.getElementById('themeToggle');
-    function stored() {
-      try { return localStorage.getItem('vertice-theme'); } catch (e) { return null; }
-    }
-    var saved = stored();
-    if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
-
-    function currentTheme() {
-      return root.getAttribute('data-theme') ||
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    }
-    function syncToggle() {
-      var isDark = currentTheme() === 'dark';
-      toggle.dataset.mode = isDark ? 'dark' : 'light';
-      toggle.setAttribute('aria-label', isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
-    }
-    syncToggle();
-    toggle.addEventListener('click', function () {
-      var next = currentTheme() === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      try { localStorage.setItem('vertice-theme', next); } catch (e) {}
-      syncToggle();
-    });
-
     /* Mobile menu -------------------------------------------------------- */
     var navToggle = document.getElementById('navToggle');
     var mobileNav = document.getElementById('mobileNav');
@@ -942,6 +953,62 @@
     window.addEventListener('resize', function () {
       if (window.innerWidth > 720) closeMobileNav();
     });
+
+    /* Carousel ----------------------------------------------------------- */
+    function initCarousel(root) {
+      var track = root.querySelector('.carousel__track');
+      var slides = root.querySelectorAll('.carousel__slide');
+      var prevBtn = root.querySelector('.carousel__btn--prev');
+      var nextBtn = root.querySelector('.carousel__btn--next');
+      var dots = root.querySelectorAll('.carousel__dot');
+      var count = slides.length;
+      var index = 0;
+      var timer = null;
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function updateDots() {
+        dots.forEach(function (d, i) { d.setAttribute('aria-current', i === index ? 'true' : 'false'); });
+      }
+      function goTo(i, smooth) {
+        index = (i + count) % count;
+        track.scrollTo({ left: track.clientWidth * index, behavior: smooth === false ? 'auto' : 'smooth' });
+        updateDots();
+      }
+      function next() { goTo(index + 1); }
+      function prev() { goTo(index - 1); }
+      function stop() { if (timer) { clearInterval(timer); timer = null; } }
+      function start() { if (!reduceMotion && count > 1) timer = setInterval(next, 5000); }
+      function restart() { stop(); start(); }
+
+      prevBtn.addEventListener('click', function () { prev(); restart(); });
+      nextBtn.addEventListener('click', function () { next(); restart(); });
+      dots.forEach(function (d, i) {
+        d.addEventListener('click', function () { goTo(i); restart(); });
+      });
+
+      function syncFromScroll() {
+        var i = Math.round(track.scrollLeft / track.clientWidth);
+        if (i !== index) { index = i; updateDots(); }
+      }
+      if ('onscrollend' in window) {
+        track.addEventListener('scrollend', syncFromScroll);
+      } else {
+        var scrollTimer;
+        track.addEventListener('scroll', function () {
+          clearTimeout(scrollTimer);
+          scrollTimer = setTimeout(syncFromScroll, 150);
+        }, { passive: true });
+      }
+
+      root.addEventListener('mouseenter', stop);
+      root.addEventListener('mouseleave', start);
+      root.addEventListener('focusin', stop);
+      root.addEventListener('focusout', start);
+      window.addEventListener('resize', function () { goTo(index, false); });
+
+      start();
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('[data-carousel]'), initCarousel);
 
     /* Sticky header state --------------------------------------------- */
     var header = document.querySelector('.site-header');
