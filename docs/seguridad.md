@@ -41,7 +41,7 @@ Options -Indexes
 - [ ] Servicio de envío probado (Formspree / Getform / el de Hostinger) — nada de `mail()` casero
 - [ ] Honeypot oculto + CAPTCHA (Cloudflare Turnstile)
 - [ ] 2FA en el correo que recibe los mensajes
-- [ ] Nunca pedir DNI, número de póliza ni datos de pago por este formulario
+- [ ] Nunca pedir datos bancarios ni de pago por este formulario
 - [ ] Definir cada cuánto se borran los mensajes viejos
 
 ## Dominio y correo (anti-suplantación)
