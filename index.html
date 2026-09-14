@@ -319,33 +319,6 @@
     padding: 0.4rem 0.7rem; border: 1px solid rgb(255 255 255 / 0.35);
   }
 
-  .carousel__btn {
-    position: absolute; top: 50%; translate: 0 -50%;
-    width: 2.5rem; height: 2.5rem; display: grid; place-items: center;
-    border: 1px solid rgb(255 255 255 / 0.35); border-radius: 999px;
-    background: rgb(10 20 15 / 0.5); backdrop-filter: blur(4px);
-    color: #fff; cursor: pointer;
-  }
-  .carousel__btn svg { width: 1.2rem; height: 1.2rem; }
-  .carousel__btn:hover { background: rgb(10 20 15 / 0.75); }
-  .carousel__btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  .carousel__btn--prev { left: 0.9rem; }
-  .carousel__btn--next { right: 0.9rem; }
-  @media (max-width: 560px) {
-    .carousel__btn { width: 2.2rem; height: 2.2rem; }
-  }
-
-  .carousel__dots {
-    position: absolute; bottom: 0.9rem; left: 50%; translate: -50% 0;
-    display: flex; gap: 0.5rem;
-  }
-  .carousel__dot {
-    width: 0.55rem; height: 0.55rem; padding: 0; border-radius: 999px;
-    border: 1px solid rgb(255 255 255 / 0.7); background: rgb(255 255 255 / 0.35);
-    cursor: pointer;
-  }
-  .carousel__dot[aria-current="true"] { background: #fff; }
-  .carousel__dot:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
   /* Section head --------------------------------------------------------- */
   .section__head { max-width: 60ch; margin-bottom: clamp(2rem, 4vw, 3rem); }
@@ -674,19 +647,6 @@
           </li>
         </ul>
         <span class="carousel__badge">Fotos de stock — reemplazar por las de la empresa</span>
-        <button class="carousel__btn carousel__btn--prev" type="button" aria-label="Foto anterior">
-          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
-        </button>
-        <button class="carousel__btn carousel__btn--next" type="button" aria-label="Foto siguiente">
-          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
-        </button>
-        <div class="carousel__dots">
-          <button class="carousel__dot" type="button" aria-label="Ir a la foto 1" aria-current="true"></button>
-          <button class="carousel__dot" type="button" aria-label="Ir a la foto 2" aria-current="false"></button>
-          <button class="carousel__dot" type="button" aria-label="Ir a la foto 3" aria-current="false"></button>
-          <button class="carousel__dot" type="button" aria-label="Ir a la foto 4" aria-current="false"></button>
-          <button class="carousel__dot" type="button" aria-label="Ir a la foto 5" aria-current="false"></button>
-        </div>
       </div>
     </div>
   </section>
@@ -954,41 +914,28 @@
       if (window.innerWidth > 720) closeMobileNav();
     });
 
-    /* Carousel ----------------------------------------------------------- */
+    /* Carousel: se mueve solo, sin controles visibles ------------------- */
     function initCarousel(root) {
       var track = root.querySelector('.carousel__track');
-      var slides = root.querySelectorAll('.carousel__slide');
-      var prevBtn = root.querySelector('.carousel__btn--prev');
-      var nextBtn = root.querySelector('.carousel__btn--next');
-      var dots = root.querySelectorAll('.carousel__dot');
-      var count = slides.length;
+      var count = root.querySelectorAll('.carousel__slide').length;
       var index = 0;
       var timer = null;
+      // Con el movimiento reducido preferido igual avanzamos (no hay botones
+      // para hacerlo a mano), pero sin animación: salto directo entre fotos.
       var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function updateDots() {
-        dots.forEach(function (d, i) { d.setAttribute('aria-current', i === index ? 'true' : 'false'); });
-      }
       function goTo(i, smooth) {
         index = (i + count) % count;
         track.scrollTo({ left: track.clientWidth * index, behavior: smooth === false ? 'auto' : 'smooth' });
-        updateDots();
       }
-      function next() { goTo(index + 1); }
-      function prev() { goTo(index - 1); }
+      function next() { goTo(index + 1, !reduceMotion); }
       function stop() { if (timer) { clearInterval(timer); timer = null; } }
-      function start() { if (!reduceMotion && count > 1) timer = setInterval(next, 5000); }
-      function restart() { stop(); start(); }
+      function start() { if (count > 1) timer = setInterval(next, 2000); }
 
-      prevBtn.addEventListener('click', function () { prev(); restart(); });
-      nextBtn.addEventListener('click', function () { next(); restart(); });
-      dots.forEach(function (d, i) {
-        d.addEventListener('click', function () { goTo(i); restart(); });
-      });
-
+      // Si el navegador reporta que la posición real del scroll quedó
+      // desalineada (p. ej. el usuario deslizó con el dedo), la retomamos.
       function syncFromScroll() {
-        var i = Math.round(track.scrollLeft / track.clientWidth);
-        if (i !== index) { index = i; updateDots(); }
+        index = Math.round(track.scrollLeft / track.clientWidth);
       }
       if ('onscrollend' in window) {
         track.addEventListener('scrollend', syncFromScroll);
